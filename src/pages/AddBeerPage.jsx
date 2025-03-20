@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AddBeerPage() {
   // State variables to store the values of the form inputs. You can leave these as they are.
@@ -21,20 +23,55 @@ function AddBeerPage() {
   const handleAttenuationLevel = (e) => setAttenuationLevel(e.target.value);
   const handleContributedBy = (e) => setContributedBy(e.target.value);
 
+  const nav = useNavigate()
+
 
 
   // TASK:
   // 1. Create a function to handle the form submission and send the form data to the Beers API to create a new beer.
+  function handleCreateBeer(event){
+    event.preventDefault()
+    const newBeerToAdd = {
+      name,
+      tagline, 
+      description, 
+      imageUrl, 
+      firstBrewed, 
+      brewersTips,
+      attenuationLevel: Number(attenuationLevel),
+      contributedBy
+    }
+    console.log(newBeerToAdd)
+  
   // 2. Use axios to make a POST request to the Beers API.
-  // 3. Once the beer is created, navigate the user to the page showing the list of all beers.
 
+      axios.post("https://ih-beers-api2.herokuapp.com/beers/new", newBeerToAdd)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err))
+
+      .finally(() => {
+        setName(""),
+        setTagline(""), 
+        setDescription(""), 
+        setImageUrl(""),
+        setFirstBrewed(""),
+        setBrewersTips(""),
+        setAttenuationLevel(0),
+        setContributedBy("")
+      });
+
+  // 3. Once the beer is created, navigate the user to the page showing the list of all beers.
+      nav("/")
+    }
 
 
   // Structure and the content of the page showing the form for adding a new beer. You can leave this as it is.
   return (
     <>
       <div className="d-inline-flex flex-column w-100 p-4">
-        <form>
+        <form onSubmit={handleCreateBeer}>
           <label>Name</label>
           <input
             className="form-control mb-4"
